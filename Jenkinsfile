@@ -72,7 +72,7 @@ pipeline {
             }
             steps {
                 script {
-                    appfileUtils.UpdateAppfileImage("reviews-imgproxy", "apps/reviews/reviews-imgproxy/app.yaml", "reviews_imgproxy:" +  git.commitHash(),  git.commitHash())
+                    appfileUtils.UpdateAppfileImage("reviews-imgproxy", "apps/reviews/reviews-imgproxy/app.yaml", imageName + ":" +  git.commitHash(),  git.commitHash())
                 }
             }
         }
