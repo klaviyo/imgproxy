@@ -58,6 +58,24 @@ pipeline {
             }
         }
 
+        stage("Publish Branch") {
+            steps {
+                script {
+                    klaviyoDocker.push(Env.PROD, imageName, git.commitHash(), false)
+                }
+            }
+        }
+
+        stage("Update Appfile") {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    appfileUtils.UpdateAppfileImage("reviews-imgproxy", "apps/reviews/reviews-imgproxy/app.yaml", "reviews:" +  git.commitHash(),  git.commitHash())
+                }
+            }
+        }
         
 
 
