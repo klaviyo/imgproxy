@@ -1,0 +1,16 @@
+env:
+  AWS_ECR_LOGIN_REGISTRY_IDS: "439508887365,340433579684,368154587575"
+
+steps:
+  # Build and publish images for master builds
+  - label: ":docker: Build and publish prod image"
+    command: >
+      kbc docker-utils build-and-publish -f docker/Dockerfile -i ${BUILDKITE_PIPELINE_SLUG} -t ${BUILDKITE_COMMIT} -a prod
+    key: build-image
+  - label: ":rocket: Create PR for appfile update"
+    depends_on: build-image
+    if: build.branch == 'master'
+    command: >
+      kbc appfile-utils update-image --app-name reviews-imgproxy \
+            --app-file-path "apps/reviews/reviews-imgproxy/app.yaml" \
+            --image ${BUILDKITE_PIPELINE_SLUG}:${BUILDKITE_COMMIT}
